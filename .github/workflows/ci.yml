@@ -84,7 +84,7 @@ jobs:
       - name: Check for broken internal links
         run: |
           # Extract doc paths from markdown links and verify they exist
-          grep -o '(docs/[a-zA-Z0-9/._-]*\.md)' README.md docs/README.md | tr -d '()' | sort -u | while read -r path; do
+          grep -o '(docs/[a-zA-Z0-9/._-]*\.md)' README.md docs/README.md | cut -d: -f2- | tr -d '()' | sort -u | while read -r path; do
             if [ ! -f "$path" ]; then
               echo "Broken link: $path"
               exit 1
