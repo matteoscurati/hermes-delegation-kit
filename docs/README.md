@@ -72,7 +72,7 @@ For critical decisions, dispatch to both `judgement-fable` and `judgement-sol` s
 ```
 hermes-delegation-kit/
 ├── plugin.yaml              # Hermes plugin manifest
-├── __init__.py              # Tool implementations
+├── plugin.py              # Tool implementations
 ├── README.md                # Project overview
 ├── LICENSE                  # MIT
 ├── docs/
