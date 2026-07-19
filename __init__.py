@@ -168,7 +168,14 @@ def _run_kimi(lane: Lane, prompt: str, cwd: str) -> Tuple[bool, str]:
         return _run_kimi_direct(lane, prompt, cwd)
 
     brief = _write_brief(prompt)
-    shell_cmd = f"delegation-kimi exec --lane builder --effort {lane.effort} \"$(cat '{brief}')\""
+    output_file = tempfile.mktemp(suffix=".txt", prefix="delegation-output-")
+    
+    # delegation-kimi run --lane <lane> --effort <effort> --prompt-file <path> --output <path> --workdir <path>
+    lane_name = lane.name.split("-")[0]  # builder-kimi -> builder
+    shell_cmd = (
+        f"delegation-kimi run --lane {lane_name} --effort {lane.effort} "
+        f"--prompt-file '{brief}' --output '{output_file}' --workdir '{cwd}'"
+    )
 
     try:
         result = subprocess.run(
@@ -181,16 +188,28 @@ def _run_kimi(lane: Lane, prompt: str, cwd: str) -> Tuple[bool, str]:
         )
         os.unlink(brief)
         if result.returncode == 75:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
             return False, "kimi quota exhausted (exit 75) — use fallback lane"
         if result.returncode != 0:
+            if os.path.exists(output_file):
+                os.unlink(output_file)
             return False, f"kimi exit {result.returncode}: {result.stderr[:500]}"
-        return True, result.stdout
+        # Read output file
+        with open(output_file) as f:
+            output = f.read()
+        os.unlink(output_file)
+        return True, output
     except subprocess.TimeoutExpired:
         os.unlink(brief)
+        if os.path.exists(output_file):
+            os.unlink(output_file)
         return False, "kimi timeout (300s)"
     except Exception as e:
         if os.path.exists(brief):
             os.unlink(brief)
+        if os.path.exists(output_file):
+            os.unlink(output_file)
         return False, f"kimi error: {e}"
 
 
@@ -284,16 +303,19 @@ def delegation_dispatch(
 
     # Auto-select lane if not forced
     if not lane:
+        task_lower = task.lower()
         if critical_decision:
             lanes = _select_judgement(critical=True, greenfield=greenfield, budget_conscious=budget_conscious)
-        elif "review" in task.lower() or "audit" in task.lower():
+        elif any(w in task_lower for w in ["security", "auth", "payment", "sql injection", "xss", "vulnerability", "exploit"]):
+            lanes = ["senior-opus"]
+        elif any(w in task_lower for w in ["review", "audit", "check", "bug", "diff", "correctness"]):
             if security_critical:
                 lanes = ["senior-opus"]
             else:
                 lanes = ["reviewer-sol"]
-        elif "extract" in task.lower() or "map" in task.lower() or "inventory" in task.lower():
+        elif any(w in task_lower for w in ["extract", "map", "inventory", "list", "summarize", "catalog"]):
             lanes = [_select_clerk(volume)]
-        elif "plan" in task.lower() or "architect" in task.lower() or "decide" in task.lower():
+        elif any(w in task_lower for w in ["plan", "architect", "decide", "design", "should we", "migrate", "refactor"]):
             lanes = _select_judgement(greenfield=greenfield, budget_conscious=budget_conscious)
         else:
             lanes = [_select_builder(task, security_critical)]
