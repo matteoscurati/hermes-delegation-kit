@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-cov
+          pip install pytest pytest-cov pyyaml
 
       - name: Run plugin structure tests
         run: |
@@ -84,9 +84,8 @@ jobs:
       - name: Check for broken internal links
         run: |
           # Simple check that referenced files exist
-          grep -r "\](docs/" README.md | while read -r line; do
-            path=$(echo "$line" | grep -o 'docs/[^)]*' | head -1)
-            if [ -n "$path" ] && [ ! -f "$path" ]; then
+          grep -o 'docs/[a-zA-Z0-9/._-]*\.md' README.md docs/README.md | sort -u | while read -r path; do
+            if [ ! -f "$path" ]; then
               echo "Broken link: $path"
               exit 1
             fi
