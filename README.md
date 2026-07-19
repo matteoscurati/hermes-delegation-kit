@@ -47,6 +47,7 @@ hermes tools enable delegation
 
 ## Prerequisites
 
+- **Python 3.10+** — Hermes Agent requires it (the plugin itself is 3.9-compatible)
 - **Claude Code CLI** (`claude`) — installed and authenticated
 - **Codex CLI** (`codex`) — installed and authenticated
 - **Kimi CLI** (`kimi` or `delegation-kimi`) — optional, for builder lane
