@@ -1,0 +1,15 @@
+name: delegation-kit
+kind: tool
+version: 1.0.0
+description: "Multi-model delegation orchestrator for Hermes — routes coding work across Claude, Codex, and Kimi CLI lanes using the delegation-kit policy."
+author: Matteo Scurati
+requires_commands:
+  - claude
+  - codex
+optional_commands:
+  - delegation-kimi
+  - delegation-glm
+config_keys:
+  - delegation.default_builder
+  - delegation.enable_parallel_judgement
+  - delegation.kimi_quota_fallback
