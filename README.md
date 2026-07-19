@@ -2,6 +2,18 @@
 
 Multi-model coding orchestrator for Hermes Agent. Routes coding work across local Claude Code, Codex, and Kimi CLI lanes using the delegation-kit policy.
 
+## Documentation
+
+Full documentation lives in [`docs/`](docs/README.md):
+
+- [Quick Start](docs/guides/quickstart.md) — Get running in 5 minutes
+- [Routing Policy](docs/guides/routing-policy.md) — How lanes are selected
+- [Lane Reference](docs/guides/lanes.md) — Detailed lane descriptions
+- [Escalation & Recovery](docs/guides/escalation.md) — Handling failures
+- [Cost Management](docs/guides/cost-management.md) — Controlling spend
+- [API Reference](docs/api/tools.md) — Tool parameters and returns
+- [Examples](docs/examples/) — Real-world patterns
+
 ## What it does
 
 Hermes acts as the **lead/orchestrator**. It dispatches coding tasks to the appropriate CLI lane based on the delegation-kit routing policy:
