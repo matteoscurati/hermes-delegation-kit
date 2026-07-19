@@ -44,7 +44,7 @@ jobs:
 
       - name: Verify Python syntax
         run: |
-          python -m py_compile __init__.py
+          python -m py_compile plugin.py
           echo "Syntax OK"
 
   lint:
@@ -83,8 +83,8 @@ jobs:
 
       - name: Check for broken internal links
         run: |
-          # Simple check that referenced files exist
-          grep -o 'docs/[a-zA-Z0-9/._-]*\.md' README.md docs/README.md | sort -u | while read -r path; do
+          # Extract doc paths from markdown links and verify they exist
+          grep -o '(docs/[a-zA-Z0-9/._-]*\.md)' README.md docs/README.md | tr -d '()' | sort -u | while read -r path; do
             if [ ! -f "$path" ]; then
               echo "Broken link: $path"
               exit 1
