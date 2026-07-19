@@ -1,5 +1,10 @@
 # Hermes Delegation Kit
 
+[![CI](https://github.com/matteoscurati/hermes-delegation-kit/workflows/CI/badge.svg)](https://github.com/matteoscurati/hermes-delegation-kit/actions)
+[![Release](https://img.shields.io/github/v/release/matteoscurati/hermes-delegation-kit)](https://github.com/matteoscurati/hermes-delegation-kit/releases)
+[![License](https://img.shields.io/github/license/matteoscurati/hermes-delegation-kit)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org)
+
 Multi-model coding orchestrator for Hermes Agent. Routes coding work across local Claude Code, Codex, and Kimi CLI lanes using the delegation-kit policy.
 
 ## Documentation
